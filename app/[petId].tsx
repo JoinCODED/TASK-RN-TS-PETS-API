@@ -1,11 +1,26 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useLocalSearchParams } from "expo-router";
 import pets from "@/data/pets";
-
+import { fetchOnePets } from "@/api/fetchAllPets";
 const PetDetails = () => {
   const { petId } = useLocalSearchParams();
-  const pet = pets[0];
+
+  const [pet, setPet] = useState([]);
+
+  useEffect(() => {
+    const getOnePetHandler = async () => {
+      const data = await fetchOnePets(Number(petId));
+      setPet(data);
+    };
+    getOnePetHandler();
+  }, []);
+
+  useEffect(() => {
+    // مكان تشغيل الكود
+    // نستدعي الفنكشن
+  }, []);
+
   return (
     <View style={styles.container}>
       <Text style={styles.name}>{pet.name}</Text>

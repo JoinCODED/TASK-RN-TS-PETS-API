@@ -1,5 +1,6 @@
 import PetList from "@/components/PetList";
 import { View, StyleSheet } from "react-native";
+import axios from "axios";
 
 export default function Index() {
   return (

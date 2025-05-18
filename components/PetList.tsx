@@ -1,18 +1,21 @@
 import {
+  Button,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
-import pets from "@/data/pets";
+import React, { useState, useEffect } from "react";
+
 import PetItem from "./PetItem";
+import pets from "@/data/pets";
+import { fetchAllPets } from "@/api/fetchAllPets";
 
 const PetList = () => {
   const [search, setSearch] = useState("");
   const [type, setType] = useState("");
-  const [displayPets, setDisplayPets] = useState(pets);
+  const [displayPets, setDisplayPets] = useState([]);
 
   const petList = displayPets
     .filter((pet) => pet.name.toLowerCase().includes(search.toLowerCase()))
@@ -25,6 +28,16 @@ const PetList = () => {
         displayPets={displayPets}
       />
     ));
+
+  useEffect(() => {
+    const getPetsHandler = async () => {
+      const data = await fetchAllPets();
+      setDisplayPets(data);
+    };
+
+    getPetsHandler();
+  }, []);
+
   return (
     <ScrollView
       contentContainerStyle={styles.container}
@@ -36,6 +49,9 @@ const PetList = () => {
         style={styles.searchInput}
         onChangeText={(value) => setSearch(value)}
       />
+      {/* <TouchableOpacity style={styles.filterButton} onPress={() => {}}>
+        <Text>load Pets</Text>
+      </TouchableOpacity> */}
 
       {/* Filter by type */}
       <ScrollView horizontal contentContainerStyle={styles.filterContainer}>
