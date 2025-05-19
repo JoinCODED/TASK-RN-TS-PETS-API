@@ -12,4 +12,9 @@ const fetchOnePets = async (id: number) => {
   const response = await instance.get(`/pets/${id}`);
   return response.data;
 };
-export { fetchAllPets, fetchOnePets };
+
+const createNewPet = async (pet: any) => {
+  const response = await instance.post("/pets", pet);
+  return response.data;
+};
+export { fetchAllPets, fetchOnePets, createNewPet };
