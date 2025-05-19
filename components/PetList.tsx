@@ -4,32 +4,78 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Button,
 } from "react-native";
-import React, { useState } from "react";
-import pets from "@/data/pets";
+import React, { useEffect, useState } from "react";
+// import pets from "@/data/pets";
 import PetItem from "./PetItem";
+import { getAllPets } from "@/API/petget";
+import { QueryClient, useQuery } from "@tanstack/react-query";
 
 const PetList = () => {
   const [search, setSearch] = useState("");
   const [type, setType] = useState("");
-  const [displayPets, setDisplayPets] = useState(pets);
+  const [displayPets, setDisplayPets] = useState<any[]>([]);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["pets"],
+    queryFn: getAllPets,
+  });
 
-  const petList = displayPets
-    .filter((pet) => pet.name.toLowerCase().includes(search.toLowerCase()))
-    .filter((pet) => pet.type.toLowerCase().includes(type.toLowerCase()))
-    .map((pet) => (
+  // useEffect(() => {
+  //   const fetchPets = async () => {
+  //     const Data = await getAllPets();
+  //     setDisplayPets(Data);
+  //   };
+  //   fetchPets();
+  // }, []);
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+  if (error) {
+    return (
+      <Text>
+        Error: {error.message} , {error.name}
+      </Text>
+    );
+  }
+
+  const petList = data
+    .filter((pet: any | undefined) =>
+      pet.name.toLowerCase().includes(search.toLowerCase())
+    )
+    .filter((pet: any | undefined) =>
+      pet.type.toLowerCase().includes(type.toLowerCase())
+    )
+    .map((pet: any | undefined) => (
       <PetItem
         key={pet.id}
         pet={pet}
-        setDisplayPets={setDisplayPets}
+        setDisplayPets={data}
         displayPets={displayPets}
       />
     ));
+
   return (
     <ScrollView
       contentContainerStyle={styles.container}
       style={styles.containerStyle}
     >
+      {/* <TouchableOpacity
+        style={{
+          backgroundColor: "#fff",
+          borderWidth: 1,
+          borderRadius: 10,
+          padding: 10,
+          width: "50%",
+          justifyContent: "center",
+          alignItems: "center",
+          marginBottom: 10,
+        }}
+        onPress={() => newPets()}
+      >
+        <Text>Relode or retrive Data</Text>
+      </TouchableOpacity> */}
+
       {/* Search Input */}
       <TextInput
         placeholder="Search for a pet"

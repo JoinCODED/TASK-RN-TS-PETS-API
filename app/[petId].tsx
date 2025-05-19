@@ -1,11 +1,29 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import pets from "@/data/pets";
+import { getOnePetId } from "@/API/petget";
+import { QueryClient, useQuery } from "@tanstack/react-query";
 
 const PetDetails = () => {
   const { petId } = useLocalSearchParams();
-  const pet = pets[0];
+  // const [pet, setpet] = useState<any>(null);
+
+  const { data: pet, isLoading } = useQuery({
+    queryKey: ["pet"],
+    queryFn: () => getOnePetId(`${petId}`),
+  });
+
+  // useEffect(() => {
+  //   const fetchPet = async () => {
+  //     const Data = await getOnePetId(`${petId}`);
+  //     setpet(Data);
+  //   };
+  //   fetchPet();
+  // }, [petId]);
+  if (isLoading || !pet) {
+    return <Text>Loading...</Text>;
+  }
   return (
     <View style={styles.container}>
       <Text style={styles.name}>{pet.name}</Text>
