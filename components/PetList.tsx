@@ -1,23 +1,35 @@
 import {
+  Button,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
-import pets from "@/data/pets";
+import React, { useState, useEffect } from "react";
+
 import PetItem from "./PetItem";
+import pets from "@/data/pets";
+import { fetchAllPets } from "@/api/fetchAllPets";
+import { useQuery } from "@tanstack/react-query";
 
 const PetList = () => {
   const [search, setSearch] = useState("");
   const [type, setType] = useState("");
-  const [displayPets, setDisplayPets] = useState(pets);
+  const [displayPets, setDisplayPets] = useState([]);
+  const { data, isLoading } = useQuery({
+    queryKey: ["fetchAllPets"],
+    queryFn: () => fetchAllPets(),
+  });
 
-  const petList = displayPets
-    .filter((pet) => pet.name.toLowerCase().includes(search.toLowerCase()))
-    .filter((pet) => pet.type.toLowerCase().includes(type.toLowerCase()))
-    .map((pet) => (
+  if (isLoading) {
+    return <Text> Show ME </Text>;
+  }
+
+  const petList = data
+    .filter((pet: any) => pet.name.toLowerCase().includes(search.toLowerCase()))
+    .filter((pet: any) => pet.type.toLowerCase().includes(type.toLowerCase()))
+    .map((pet: any) => (
       <PetItem
         key={pet.id}
         pet={pet}
@@ -25,6 +37,16 @@ const PetList = () => {
         displayPets={displayPets}
       />
     ));
+
+  // useEffect(() => {
+  //   const getPetsHandler = async () => {
+  //     const data = await fetchAllPets();
+  //     setDisplayPets(data);
+  //   };
+
+  //   getPetsHandler();
+  // }, []);
+
   return (
     <ScrollView
       contentContainerStyle={styles.container}
@@ -36,6 +58,9 @@ const PetList = () => {
         style={styles.searchInput}
         onChangeText={(value) => setSearch(value)}
       />
+      {/* <TouchableOpacity style={styles.filterButton} onPress={() => {}}>
+        <Text>load Pets</Text>
+      </TouchableOpacity> */}
 
       {/* Filter by type */}
       <ScrollView horizontal contentContainerStyle={styles.filterContainer}>
