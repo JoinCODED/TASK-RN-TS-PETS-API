@@ -8,12 +8,7 @@ import {
 import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { createNewPet } from "@/api/fetchAllPets";
-interface PetData {
-  name: string;
-  type: string;
-  image: string;
-  adopted: string;
-}
+import { router } from "expo-router";
 
 const AddPet = () => {
   const [name, setName] = useState("");
@@ -26,10 +21,11 @@ const AddPet = () => {
     mutationKey: ["createNewPet"],
     mutationFn: () => createNewPet({ name, type, image, adopted, disc }),
     onSuccess: () => {
-      alert("clicked!");
+      console.log("clicked!");
+      router.back();
     },
     onError: () => {
-      alert("Tre Again");
+      console.log("Tre Again");
     },
   });
 
@@ -43,27 +39,27 @@ const AddPet = () => {
       <TextInput
         placeholder="Name"
         style={styles.input}
-        onChangeText={setName}
+        onChangeText={(text) => setName(text)}
       />
       <TextInput
         placeholder="Description"
         style={styles.input}
-        onChangeText={setDisc}
+        onChangeText={(text) => setDisc(text)}
       />
       <TextInput
         placeholder="Type"
         style={styles.input}
-        onChangeText={setType}
+        onChangeText={(text) => setType(text)}
       />
       <TextInput
         placeholder="image"
         style={styles.input}
-        onChangeText={setImage}
+        onChangeText={(text) => setImage(text)}
       />
       <TextInput
         placeholder="Adopted"
         style={styles.input}
-        onChangeText={setAdopted}
+        onChangeText={(text) => setAdopted(text)}
       />
 
       <TouchableOpacity style={styles.button} onPress={handlePress}>
