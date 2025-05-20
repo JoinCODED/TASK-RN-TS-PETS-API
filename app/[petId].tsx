@@ -16,11 +16,6 @@ const PetDetails = () => {
     getOnePetHandler();
   }, []);
 
-  useEffect(() => {
-    // مكان تشغيل الكود
-    // نستدعي الفنكشن
-  }, []);
-
   return (
     <View style={styles.container}>
       <Text style={styles.name}>{pet.name}</Text>

@@ -8,18 +8,23 @@ import {
 import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { createNewPet } from "@/api/fetchAllPets";
+interface PetData {
+  name: string;
+  type: string;
+  image: string;
+  adopted: string;
+}
 
 const AddPet = () => {
-  const [formatData, setFormatData] = useState({
-    name: "",
-    type: "",
-    image: "",
-    adopted: "false",
-  });
+  const [name, setName] = useState("");
+  const [type, setType] = useState("");
+  const [image, setImage] = useState("");
+  const [disc, setDisc] = useState("");
+  const [adopted, setAdopted] = useState("false");
 
   const { mutate, data } = useMutation({
     mutationKey: ["createNewPet"],
-    mutationFn: () => createNewPet(formatData),
+    mutationFn: () => createNewPet({ name, type, image, adopted, disc }),
     onSuccess: () => {
       alert("clicked!");
     },
@@ -35,11 +40,31 @@ const AddPet = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Add Your Pet! </Text>
-      <TextInput placeholder="Name" style={styles.input} />
-      <TextInput placeholder="Description" style={styles.input} />
-      <TextInput placeholder="Type" style={styles.input} />
-      <TextInput placeholder="image" style={styles.input} />
-      <TextInput placeholder="Adopted" style={styles.input} />
+      <TextInput
+        placeholder="Name"
+        style={styles.input}
+        onChangeText={setName}
+      />
+      <TextInput
+        placeholder="Description"
+        style={styles.input}
+        onChangeText={setDisc}
+      />
+      <TextInput
+        placeholder="Type"
+        style={styles.input}
+        onChangeText={setType}
+      />
+      <TextInput
+        placeholder="image"
+        style={styles.input}
+        onChangeText={setImage}
+      />
+      <TextInput
+        placeholder="Adopted"
+        style={styles.input}
+        onChangeText={setAdopted}
+      />
 
       <TouchableOpacity style={styles.button} onPress={handlePress}>
         <Text style={styles.buttonText}>Add Pet</Text>
