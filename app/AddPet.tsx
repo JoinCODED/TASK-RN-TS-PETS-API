@@ -5,19 +5,56 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import { postPet } from "@/api/pets";
+import { useMutation } from "@tanstack/react-query";
 
 const AddPet = () => {
+  const [name, setName] = useState("");
+  const [adopted, setAdopt] = useState(false);
+  // const [id, setId] = useState("1");
+  // const [description, setDescription] = useState("");
+  const [type, setType] = useState("");
+  const [image, setImage] = useState("");
+
+  const { mutate } = useMutation({
+    mutationKey: ["addPet"],
+    mutationFn: () => postPet(name, type, image, adopted),
+    onSuccess: () => {
+      alert("New Pets added");
+    },
+  });
+
+  // const handlecreatepet = async () => {
+  //   console.log("New pet", { name, adopted, type, image });
+  //   const data = await postPet(name, type, image, adopted);
+  //   console.log(data);
+  // };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Add Your Pet! </Text>
-      <TextInput placeholder="Name" style={styles.input} />
+      <TextInput
+        placeholder="Name"
+        style={styles.input}
+        value={name}
+        onChangeText={setName}
+      />
       <TextInput placeholder="Description" style={styles.input} />
-      <TextInput placeholder="Type" style={styles.input} />
-      <TextInput placeholder="Image" style={styles.input} />
+      <TextInput
+        placeholder="Type"
+        style={styles.input}
+        value={type}
+        onChangeText={setType}
+      />
+      <TextInput
+        placeholder="Image"
+        style={styles.input}
+        value={image}
+        onChangeText={setImage}
+      />
       <TextInput placeholder="Adopted" style={styles.input} />
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={() => mutate()}>
         <Text style={styles.buttonText}>Add Pet</Text>
       </TouchableOpacity>
     </View>

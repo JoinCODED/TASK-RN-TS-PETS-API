@@ -6,23 +6,49 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
-import pets from "@/data/pets";
 import PetItem from "./PetItem";
+import { getAllpets } from "@/api/pets";
+import { useQuery } from "@tanstack/react-query";
 
 const PetList = () => {
   const [search, setSearch] = useState("");
   const [type, setType] = useState("");
-  const [displayPets, setDisplayPets] = useState(pets);
 
-  const petList = displayPets
-    .filter((pet) => pet.name.toLowerCase().includes(search.toLowerCase()))
-    .filter((pet) => pet.type.toLowerCase().includes(type.toLowerCase()))
-    .map((pet) => (
+  // const [displayPets, setDisplayPets] = useState<any[]>([]);
+
+  // const handleLoadedPets = async () => {
+  //   const data = await getAllpets();
+  //   setDisplayPets(data);
+  // };
+
+  // if (displayPets.length === 0) {
+  //   handleLoadedPets();
+  // }
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["getallpets"],
+    queryFn: () => getAllpets(),
+  });
+  if (isLoading)
+    return (
+      <Text
+        style={{
+          textAlign: "center",
+        }}
+      >
+        Loading...
+      </Text>
+    );
+
+  const petList = data
+    .filter((pet: any) => pet.name.toLowerCase().includes(search.toLowerCase()))
+    .filter((pet: any) => pet.type.toLowerCase().includes(type.toLowerCase()))
+    .map((pet: any) => (
       <PetItem
         key={pet.id}
         pet={pet}
-        setDisplayPets={setDisplayPets}
-        displayPets={displayPets}
+        setDisplayPets={data}
+        displayPets={data}
       />
     ));
   return (
