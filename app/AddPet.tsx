@@ -5,19 +5,63 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import pets from "@/data/pets";
+import { addPet } from "@/api/pets";
+const [petName, setPetName] = useState("");
+const [description, setDescription] = useState("");
+const [petImage, setPetImage] = useState("");
+const [petType, setPetType] = useState("");
+const [petAdopted, setPetAdopted] = useState("");
+
+const { mutate, data } = useMutation({
+  mutationKey: ["addPet"],
+  mutationFn: () =>
+    addPet({
+      name: petName,
+      description: description,
+      image: petImage,
+      type: petType,
+      adopted: petAdopted.toLowerCase() === "true",
+    }),
+});
+
+const handlePet = () => {
+  mutate();
+};
 
 const AddPet = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Add Your Pet! </Text>
-      <TextInput placeholder="Name" style={styles.input} />
-      <TextInput placeholder="Description" style={styles.input} />
-      <TextInput placeholder="Type" style={styles.input} />
-      <TextInput placeholder="Image" style={styles.input} />
-      <TextInput placeholder="Adopted" style={styles.input} />
+      <TextInput
+        onChangeText={setPetName}
+        placeholder="Pet Name"
+        style={styles.input}
+      />
+      <TextInput
+        onChangeText={setDescription}
+        placeholder="Description"
+        style={styles.input}
+      />
+      <TextInput
+        onChangeText={setPetImage}
+        placeholder="Image"
+        style={styles.input}
+      />
+      <TextInput
+        onChangeText={setPetType}
+        placeholder="Type"
+        style={styles.input}
+      />
+      <TextInput
+        onChangeText={setPetAdopted}
+        placeholder="Adopted"
+        style={styles.input}
+      />
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity onPress={handlePet} style={styles.button}>
         <Text style={styles.buttonText}>Add Pet</Text>
       </TouchableOpacity>
     </View>

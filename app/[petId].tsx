@@ -1,23 +1,43 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { useLocalSearchParams } from "expo-router";
-import pets from "@/data/pets";
+import { useQuery } from "@tanstack/react-query";
+import { getOnePet } from "@/api/pets";
 
 const PetDetails = () => {
   const { petId } = useLocalSearchParams();
-  const pet = pets[0];
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["PetsKey", petId],
+    queryFn: () => getOnePet(Number(petId)), // convert string to number
+  });
+
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  if (!data) {
+    return (
+      <View style={styles.container}>
+        <Text>Pet not found.</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.name}>{pet.name}</Text>
-      <Image source={{ uri: pet.image }} style={styles.image} />
-      <Text style={styles.description}> {pet.description}</Text>
-      <Text style={styles.type}>Type: {pet.type}</Text>
+      <Text style={styles.name}>{data.name}</Text>
+      <Image source={{ uri: data.image }} style={styles.image} />
+      <Text style={styles.description}>{data.description}</Text>
+      <Text style={styles.type}>Type: {data.type}</Text>
 
-      <View>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Delete</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity style={styles.button}>
+        <Text style={styles.buttonText}>Delete</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -33,6 +53,7 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: 300,
+    marginTop: 10,
   },
   name: {
     fontSize: 24,
@@ -53,10 +74,11 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     padding: 10,
     borderRadius: 10,
-    margin: 10,
+    marginTop: 20,
   },
   buttonText: {
     color: "white",
     textAlign: "center",
+    fontWeight: "bold",
   },
 });

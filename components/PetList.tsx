@@ -6,25 +6,34 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
-import pets from "@/data/pets";
+// import pets from "@/data/pets";
 import PetItem from "./PetItem";
+import { useQuery } from "@tanstack/react-query";
+import { getPets } from "@/api/pets";
 
 const PetList = () => {
   const [search, setSearch] = useState("");
   const [type, setType] = useState("");
-  const [displayPets, setDisplayPets] = useState(pets);
+  // const [displayPets, setDisplayPets] = useState(pets);
+  const { data = [], isLoading } = useQuery({
+    queryKey: ["pets"],
+    queryFn: getPets,
+  });
 
-  const petList = displayPets
+  isLoading && <Text style={{ fontSize: 100 }}>Fetching</Text>;
+
+  const petList = data
     .filter((pet) => pet.name.toLowerCase().includes(search.toLowerCase()))
     .filter((pet) => pet.type.toLowerCase().includes(type.toLowerCase()))
     .map((pet) => (
       <PetItem
         key={pet.id}
         pet={pet}
-        setDisplayPets={setDisplayPets}
-        displayPets={displayPets}
+        // setDisplayPets={setDisplayPets}
+        // displayPets={displayPets}
       />
     ));
+
   return (
     <ScrollView
       contentContainerStyle={styles.container}
